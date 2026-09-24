@@ -25,6 +25,13 @@ parser.add_argument("--words", action="store_true", help="print the total number
 
 parser.add_argument("--lines", action="store_true", help="print the total number of lines in the file")
 
+parser.add_argument("--cut_edges",
+                    nargs=2,
+                    type=int,
+                    metavar=("START", "END"),
+                    help="script will only use the text between START and END lines, included. first line is 0."
+                    )
+
 args = parser.parse_args()
 
 if not args.file.endswith(".txt"):
@@ -39,17 +46,22 @@ with open(args.file, "r") as file:
     content = file.read().lower()
 
 
+if args.cut_edges:
+    start , end = args.cut_edges
+    lines = content.splitlines()
+    if start < 0 or end > len(lines) or start > end:
+        print("Invalid line range specified.")
+        exit()
+    content = "\n".join(lines[start:end + 1])
+
+
+
 
 text = unicodedata.normalize("NFD", "".join(filter(str.isalpha, content)))
-
 text_without_accents = "".join(c for c in text if unicodedata.category(c) != "Mn")
-
 counter = Counter(text_without_accents)
-
 total_letters = sum(counter.values()) # per usare len dovrei fare lista di filter
-
 words = len(content.split())
-
 lines = content.count("\n")
 
 def frequency_calculator(x):
