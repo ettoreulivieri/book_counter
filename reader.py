@@ -16,24 +16,17 @@ parser = argparse.ArgumentParser(
                                 )
 
 parser.add_argument("file", help = "the file to read")
-
 parser.add_argument("letter", help = "the letter you want frequency of")
-
 parser.add_argument("--hist", action="store_true", help="print a histogram of the letter frequencies")
-
 parser.add_argument("--words", action="store_true", help="print the total number of words in the file")
-
 parser.add_argument("--lines", action="store_true", help="print the total number of lines in the file")
-
 parser.add_argument("--cut_edges",
                     nargs=2,
                     type=int,
                     metavar=("START", "END"),
                     help="script will only use the text between START and END lines, included. first line is 0."
                     )
-
 args = parser.parse_args()
-
 if not args.file.endswith(".txt"):
     print("you must provide a .txt file")
     exit()
@@ -41,10 +34,8 @@ if not args.letter.isalpha() or len(args.letter) != 1:
     print("you must provide a single letter!")
     exit()
 
-
 with open(args.file, "r") as file:
     content = file.read().lower()
-
 
 if args.cut_edges:
     start , end = args.cut_edges
@@ -53,9 +44,6 @@ if args.cut_edges:
         print("Invalid line range specified.")
         exit()
     content = "\n".join(lines[start:end + 1])
-
-
-
 
 text = unicodedata.normalize("NFD", "".join(filter(str.isalpha, content)))
 text_without_accents = "".join(c for c in text if unicodedata.category(c) != "Mn")
@@ -69,12 +57,9 @@ def frequency_calculator(x):
 
 print(frequency_calculator(args.letter.lower()))
 
-end = perf_counter()
-
-
 def print_histogram(freq):
     percentage = freq * 100
-    freq = freq * 100
+    freq = freq * 300
     freq = freq // 1
     return f"{'█' * int(freq)} {percentage:.2f}%"
 
@@ -90,6 +75,8 @@ if args.words:
 if args.lines:
     print(f"Total lines: {lines}")
 
+
+end = perf_counter()
 
 print(f"Execution time: {end - start:.4f} seconds")
 #hello
